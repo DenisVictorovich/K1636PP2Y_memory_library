@@ -1,6 +1,6 @@
 
 /* `digtyp.h` */
-/* редакция от [22.02.2018] */
+/* СЂРµРґР°РєС†РёСЏ РѕС‚ [22.02.2018] */
 
 #ifndef  DIG_TYPES_H
 #define  DIG_TYPES_H
@@ -40,11 +40,11 @@ typedef  const u16     uc16;
 typedef  const u32     uc32;
 typedef  const u64     uc64;
 
-// для работы со временем
-typedef  ui32  sec2000 ; /* секунды от начала 2000 года */
+// РґР»СЏ СЂР°Р±РѕС‚С‹ СЃРѕ РІСЂРµРјРµРЅРµРј
+typedef  ui32  sec2000 ; /* СЃРµРєСѓРЅРґС‹ РѕС‚ РЅР°С‡Р°Р»Р° 2000 РіРѕРґР° */
 typedef  ui32  ulong ;   /* unsigned long */
 
-/// #pragma pack( push, 1 ) // ПРАВИЛЬНАЯ упаковка структур
+/// #pragma pack( push, 1 ) // РџР РђР’РР›Р¬РќРђРЇ СѓРїР°РєРѕРІРєР° СЃС‚СЂСѓРєС‚СѓСЂ
 ///    struct DTime { ui8 sec,min,hour,date,mon,year; } ;
 /// #pragma pack( pop )
 
