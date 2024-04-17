@@ -3,9 +3,9 @@
 #ifndef  _K1636PP2Y_C_
 #define  _K1636PP2Y_C_
 
-/// РУССКАЯ ФЛЕШЬ-ПАМЯТЬ «К1636РР2У»
-/// Эпиграф: «Умом Россию не понять, аршином общим не измерить: у ней особенная стать – в Россию можно только верить» [Фёдор Иванович Тютчев (1803)]
-/// Платформа: ARM Cortex M3 «STM32F105» 72 MГц
+/// Р РЈРЎРЎРљРђРЇ Р¤Р›Р•РЁР¬-РџРђРњРЇРўР¬ В«Рљ1636Р Р 2РЈВ»
+/// Р­РїРёРіСЂР°С„: В«РЈРјРѕРј Р РѕСЃСЃРёСЋ РЅРµ РїРѕРЅСЏС‚СЊ, Р°СЂС€РёРЅРѕРј РѕР±С‰РёРј РЅРµ РёР·РјРµСЂРёС‚СЊ: Сѓ РЅРµР№ РѕСЃРѕР±РµРЅРЅР°СЏ СЃС‚Р°С‚СЊ вЂ“ РІ Р РѕСЃСЃРёСЋ РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РІРµСЂРёС‚СЊВ» [Р¤С‘РґРѕСЂ РРІР°РЅРѕРІРёС‡ РўСЋС‚С‡РµРІ (1803)]
+/// РџР»Р°С‚С„РѕСЂРјР°: ARM Cortex M3 В«STM32F105В» 72 MР“С†
 
 void fl_mem_init()
 {
@@ -27,11 +27,11 @@ void fl_mem_init()
     io_set(fl_mem_nOE);
     io_set(fl_mem_nWE);
 
-    io_clr(fl_mem_MRST); delay_timer_delay_ms(5/* мс */);
-    io_set(fl_mem_MRST); delay_timer_delay_ms(5/* мс */);
+    io_clr(fl_mem_MRST); delay_timer_delay_ms(5/* РјСЃ */);
+    io_set(fl_mem_MRST); delay_timer_delay_ms(5/* РјСЃ */);
 }
 
-/* NDV в соответствии с `stm32f10x.h` */
+/* NDV РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ `stm32f10x.h` */
 
 #define  APB2_GPIO_BASE  (0x40000000 | 0x00010000)
 
@@ -63,7 +63,7 @@ void fl_mem_init()
         asm volatile ( "ldr r5, =" stringify(io_GPIO_n(fl_mem_MTDI) | 0x10/* offset `BSRR`[F3] */) "\n" \
                        "ldr r6, =1 << " stringify(io_bit_n(fl_mem_MTDI)) " << 0x10\n" /* reset bit */   \
                        "ldr r7, =1 << " stringify(io_bit_n(fl_mem_MTDI)) " << 0x00\n" /* set bit   */   \
-                       /* чтобы менять направление потока данных */                                     \
+                       /* С‡С‚РѕР±С‹ РјРµРЅСЏС‚СЊ РЅР°РїСЂР°РІР»РµРЅРёРµ РїРѕС‚РѕРєР° РґР°РЅРЅС‹С… */                                     \
                        "ldr r8, =" stringify(io_GPIO_n(fl_mem_MTDI) | io_GPIO_CR_offset(fl_mem_MTDI)) "\n" )
     #define  fl_mem_bit_output_MTDI(b)                                                                  \
                        "ands r10, r0, #(" stringify(1 << b) ")\n"                                       \
@@ -73,9 +73,9 @@ void fl_mem_init()
     #define  fl_mem_bit_output(b)                                                                       \
                        fl_mem_bit_output_MTDI(b)                                                        \
                        "nop\n" "nop\n" "nop\n" "nop\n" "nop\n"                                          \
-                       "str" " r3, [r1]\n"/* `1` возрастающий фронт */                                  \
+                       "str" " r3, [r1]\n"/* `1` РІРѕР·СЂР°СЃС‚Р°СЋС‰РёР№ С„СЂРѕРЅС‚ */                                  \
                        "nop\n" "nop\n" "nop\n" "nop\n" "nop\n"                                          \
-                       "str" " r2, [r1]\n"/* `0` спадающий фронт */
+                       "str" " r2, [r1]\n"/* `0` СЃРїР°РґР°СЋС‰РёР№ С„СЂРѕРЅС‚ */
     #define  fl_mem_switch_to_input_MTDI() /* HI-Z input */                                             \
                        "ldr  r11, [r8]\n"                                                               \
                        "bic  r11, #(15 << " io_nibble_position(fl_mem_MTDI) ")\n"                       \
@@ -88,10 +88,10 @@ void fl_mem_init()
                        "str  r11, [r8]\n"
     #define  fl_mem_core_registers_prepare()                                                                \
         WDT_FLAG = CONCODE;                                                                                 \
-        fl_mem_MTCK_management_registers_prepare(); /* готовим средства для управления тактовым сигналом */ \
-        fl_mem_MTDI_management_registers_prepare(); /* готовим средства для управления сигналом данных   */
+        fl_mem_MTCK_management_registers_prepare(); /* РіРѕС‚РѕРІРёРј СЃСЂРµРґСЃС‚РІР° РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ С‚Р°РєС‚РѕРІС‹Рј СЃРёРіРЅР°Р»РѕРј */ \
+        fl_mem_MTDI_management_registers_prepare(); /* РіРѕС‚РѕРІРёРј СЃСЂРµРґСЃС‚РІР° РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ СЃРёРіРЅР°Р»РѕРј РґР°РЅРЅС‹С…   */
 
-/// «IO_ASM»
+/// В«IO_ASMВ»
 #define  io_P_prepare(port_bit)  "ldr r4, =" stringify(io_memory_address_GPIO(port_bit) | 0x10/* offset `BSRR`[F3] */) "\n"
 #define  io_1_prepare(port_bit)  "mov r11, #(1 << " stringify(io_bit(port_bit)) " << 0x00)\n"
 #define  io_0_prepare(port_bit)  "mov r12, #(1 << " stringify(io_bit(port_bit)) " << 0x10)\n"
@@ -99,8 +99,8 @@ void fl_mem_init()
 #define  io_1()  "str r11, [r4]\n"
 #define  io_0()  "str r12, [r4]\n"
 
-#define  fl_mem_MTCK_1()  "str r3, [r1]\n"/* возрастающий фронт, не меняем состояние «флагов» суффиксом «s» */
-#define  fl_mem_MTCK_0()  "str r2, [r1]\n"/* спадающий    фронт, не меняем состояние «флагов» суффиксом «s» */
+#define  fl_mem_MTCK_1()  "str r3, [r1]\n"/* РІРѕР·СЂР°СЃС‚Р°СЋС‰РёР№ С„СЂРѕРЅС‚, РЅРµ РјРµРЅСЏРµРј СЃРѕСЃС‚РѕСЏРЅРёРµ В«С„Р»Р°РіРѕРІВ» СЃСѓС„С„РёРєСЃРѕРј В«sВ» */
+#define  fl_mem_MTCK_0()  "str r2, [r1]\n"/* СЃРїР°РґР°СЋС‰РёР№    С„СЂРѕРЅС‚, РЅРµ РјРµРЅСЏРµРј СЃРѕСЃС‚РѕСЏРЅРёРµ В«С„Р»Р°РіРѕРІВ» СЃСѓС„С„РёРєСЃРѕРј В«sВ» */
 
 void fl_mem_STROBE_op_code(volatile register u32 r0/* [29.01.2018] | op_code */)
 {
@@ -109,7 +109,7 @@ void fl_mem_STROBE_op_code(volatile register u32 r0/* [29.01.2018] | op_code */)
     asm volatile
     (
             fl_mem_switch_to_output_MTDI()
-            /// СТРОБ
+            /// РЎРўР РћР‘
             io_P_prepare(fl_mem_STROBE)
             io_1_prepare(fl_mem_STROBE)
             io_0_prepare(fl_mem_STROBE)
@@ -117,7 +117,7 @@ void fl_mem_STROBE_op_code(volatile register u32 r0/* [29.01.2018] | op_code */)
             fl_mem_MTCK_0() io_1()  "nop\n" "nop\n" "nop\n" "nop\n"
             fl_mem_MTCK_1() "nop\n" "nop\n" "nop\n" "nop\n" "nop\n"
             fl_mem_MTCK_0() io_0()  "nop\n" "nop\n" "nop\n" "nop\n"
-            /// СТАРТОВЫЙ СИМВОЛ
+            /// РЎРўРђР РўРћР’Р«Р™ РЎРРњР’РћР›
             fl_mem_bit_output(1)
             fl_mem_bit_output(0)
     ) ;
@@ -221,13 +221,13 @@ u8 fl_mem_Addr_17_rd(volatile register u32 r0/* [29.01.2018] */)
 }
 
 #define  inp_P_prepare(port_bit)  "ldr r11, =" stringify(io_memory_address_GPIO(port_bit) | 0x08/* offset `IDR`[F3] */) "\n"
-#define  inp_P_read(port_bit)     "ldr  r4, [r11]\n" /* далее выделяем нужный разряд: */ \
-                                  "ands r4, #(1 << " stringify(io_bit(port_bit)) ")\n" /* далее можно прочесть состояние «флагов» ... */
+#define  inp_P_read(port_bit)     "ldr  r4, [r11]\n" /* РґР°Р»РµРµ РІС‹РґРµР»СЏРµРј РЅСѓР¶РЅС‹Р№ СЂР°Р·СЂСЏРґ: */ \
+                                  "ands r4, #(1 << " stringify(io_bit(port_bit)) ")\n" /* РґР°Р»РµРµ РјРѕР¶РЅРѕ РїСЂРѕС‡РµСЃС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёРµ В«С„Р»Р°РіРѕРІВ» ... */
 
 #define  asm_enable_interrupt()   "CPSIE i \n" /* macro to enable  all interrupts */
 #define  asm_disable_interrupt()  "CPSID i \n" /* macro to disable all interrupts */
 
-/// ПОДОБРАНО ОСЦИЛЛОГРАФОМ [17.05.2017]
+/// РџРћР”РћР‘Р РђРќРћ РћРЎР¦РР›Р›РћР“Р РђР¤РћРњ [17.05.2017]
 #define  fl_mem_5_MHz_dummy_cycle()     fl_mem_MTCK_1() "nop\n" "nop\n" "nop\n" "nop\n" "nop\n" "nop\n" \
                                         fl_mem_MTCK_0() "nop\n" "nop\n" "nop\n" "nop\n" "nop\n" "nop\n"
 #define  fl_mem_5_MHz_wait_ack_cycle()  fl_mem_MTCK_1()                                  \
@@ -251,7 +251,7 @@ void fl_mem_Data_5_MHz(volatile register u32 r0/* [29.01.2018] */)
                fl_mem_bit_output(6)
                fl_mem_bit_output(7)
                fl_mem_switch_to_input_MTDI()
-               /* КРИТИЧЕСКАЯ ЗОНА ! ТАКТЫ 5 МГц { период [0,14 .. 0,24] µс } */
+               /* РљР РРўРР§Р•РЎРљРђРЇ Р—РћРќРђ ! РўРђРљРўР« 5 РњР“С† { РїРµСЂРёРѕРґ [0,14 .. 0,24] ВµСЃ } */
                /* 1 */ fl_mem_5_MHz_dummy_cycle()
                /* 2 */ fl_mem_5_MHz_dummy_cycle()
                /* 3 */ fl_mem_5_MHz_dummy_cycle()
@@ -276,12 +276,12 @@ void fl_mem_Data_5_MHz_ack(volatile register u32 r0/* [29.01.2018] */)
                fl_mem_bit_output(7)
                fl_mem_switch_to_input_MTDI()
                inp_P_prepare(fl_mem_MTDI)
-               /* КРИТИЧЕСКАЯ ЗОНА ! ТАКТЫ 5 МГц { период [0,14 .. 0,24] µс } */
+               /* РљР РРўРР§Р•РЎРљРђРЇ Р—РћРќРђ ! РўРђРљРўР« 5 РњР“С† { РїРµСЂРёРѕРґ [0,14 .. 0,24] ВµСЃ } */
                /* 1 */ fl_mem_5_MHz_dummy_cycle()
                /* 2 */ fl_mem_5_MHz_dummy_cycle()
                /* 3 */ fl_mem_5_MHz_dummy_cycle()
                /* 4 */ fl_mem_5_MHz_dummy_cycle()
-               /* ждём подтверждение 4 такта ... */
+               /* Р¶РґС‘Рј РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ 4 С‚Р°РєС‚Р° ... */
             "fl_mem_Data_5_MHz_ack_wait: \n"
                /* 1 */ fl_mem_5_MHz_wait_ack_cycle()
                /* 2 */ fl_mem_5_MHz_wait_ack_cycle()
@@ -291,7 +291,7 @@ void fl_mem_Data_5_MHz_ack(volatile register u32 r0/* [29.01.2018] */)
     ) ;
 }
 
-/// ПОДОБРАНО ОСЦИЛЛОГРАФОМ [17.05.2017]
+/// РџРћР”РћР‘Р РђРќРћ РћРЎР¦РР›Р›РћР“Р РђР¤РћРњ [17.05.2017]
 #define  fl_mem_2_MHz_dummy_cycle()     fl_mem_MTCK_1() "nop\n" "nop\n" "nop\n" "nop\n"  \
                                         "nop\n" "nop\n" "nop\n" "nop\n" "nop\n" "nop\n"  \
                                         "nop\n" "nop\n" "nop\n" "nop\n" "nop\n"          \
@@ -323,12 +323,12 @@ void fl_mem_Data_2_MHz_ack(volatile register u32 r0/* [29.01.2018] */)
                fl_mem_bit_output(7)
                fl_mem_switch_to_input_MTDI()
                inp_P_prepare(fl_mem_MTDI)
-               /* КРИТИЧЕСКАЯ ЗОНА ! ТАКТЫ 2 МГц { период [0,38 .. 0,64] µс } */
+               /* РљР РРўРР§Р•РЎРљРђРЇ Р—РћРќРђ ! РўРђРљРўР« 2 РњР“С† { РїРµСЂРёРѕРґ [0,38 .. 0,64] ВµСЃ } */
                /* 1 */ fl_mem_2_MHz_dummy_cycle()
                /* 2 */ fl_mem_2_MHz_dummy_cycle()
                /* 3 */ fl_mem_2_MHz_dummy_cycle()
                /* 4 */ fl_mem_2_MHz_dummy_cycle()
-               /* ждём подтверждение 4 такта ... */
+               /* Р¶РґС‘Рј РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ 4 С‚Р°РєС‚Р° ... */
             "fl_mem_Data_2_MHz_ack_wait: \n"
                /* 1 */ fl_mem_2_MHz_wait_ack_cycle()
                /* 2 */ fl_mem_2_MHz_wait_ack_cycle()
@@ -338,18 +338,18 @@ void fl_mem_Data_2_MHz_ack(volatile register u32 r0/* [29.01.2018] */)
     ) ;
 }
 
-/// ИСТОЧНИК: | http://forum.milandr.ru/viewtopic.php?f=5&t=75&start=60 | { [Ctrl] & «мышь» }
-/// Предположим, мы хотим записать значение 0xA5 в блок 2 по адресу 1000 по последовательному интерфейсу.
-/// Команда для памяти 16 Мбит (1636РР2) будет выглядеть так:
+/// РРЎРўРћР§РќРРљ: | http://forum.milandr.ru/viewtopic.php?f=5&t=75&start=60 | { [Ctrl] & В«РјС‹С€СЊВ» }
+/// РџСЂРµРґРїРѕР»РѕР¶РёРј, РјС‹ С…РѕС‚РёРј Р·Р°РїРёСЃР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ 0xA5 РІ Р±Р»РѕРє 2 РїРѕ Р°РґСЂРµСЃСѓ 1000 РїРѕ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕРјСѓ РёРЅС‚РµСЂС„РµР№СЃСѓ.
+/// РљРѕРјР°РЅРґР° РґР»СЏ РїР°РјСЏС‚Рё 16 РњР±РёС‚ (1636Р Р 2) Р±СѓРґРµС‚ РІС‹РіР»СЏРґРµС‚СЊ С‚Р°Рє:
 /// | Num3 | Num2 | Num1 | Num0 | CEB | NVRB | OEB | WEB | TMEN | BYTEB | VREAD |
 /// |    1 |    0 |    0 |    0 |   0 |    1 |   1 |   0 |    0 |     0 |     0 |
-/// 1й (командный, Addr 555, Data AA)
+/// 1Р№ (РєРѕРјР°РЅРґРЅС‹Р№, Addr 555, Data AA)
 ///    01 10000110000 010101010101 10101010
-/// 2й (командный, Addr AAA, Data 55)
+/// 2Р№ (РєРѕРјР°РЅРґРЅС‹Р№, Addr AAA, Data 55)
 ///    01 10000110000 101010101010 01010101
-/// 3й (командный, Addr 555, Data A0)
+/// 3Р№ (РєРѕРјР°РЅРґРЅС‹Р№, Addr 555, Data A0)
 ///    01 10000110000 010101010101 10100000
-/// 4й (полный, Addr 1000, Data OO)
+/// 4Р№ (РїРѕР»РЅС‹Р№, Addr 1000, Data OO)
 ///    00 10000110000 00010000000000000 OOOOOOOO
 
 enum { fm_Num3 = 1024, fm_Num2 = 512, fm_Num1 = 256, fm_Num0 = 128, fm_CEB = 64,
@@ -382,10 +382,10 @@ void fl_mem_full_cycle_2_MHz(u32 c, u32 a, u8 d)
 void fl_mem_write(u8 block/* 1 .. 14 */, u32 byte, u8 data)
 {
     vu32 c = ( (vu32)block & 15 ) << 7 | fm_NVRB | fm_OEB ;
-    /* цикл 1 */ fl_mem_command_cycle(c, 0x555, 0xAA);
-    /* цикл 2 */ fl_mem_command_cycle(c, 0xAAA, 0x55);
-    /* цикл 3 */ fl_mem_command_cycle(c, 0x555, 0xA0);
-    /* цикл 4 */ fl_mem_full_cycle_5_MHz(c, byte, data);
+    /* С†РёРєР» 1 */ fl_mem_command_cycle(c, 0x555, 0xAA);
+    /* С†РёРєР» 2 */ fl_mem_command_cycle(c, 0xAAA, 0x55);
+    /* С†РёРєР» 3 */ fl_mem_command_cycle(c, 0x555, 0xA0);
+    /* С†РёРєР» 4 */ fl_mem_full_cycle_5_MHz(c, byte, data);
 }
 
 u8 fl_mem_read(u8 block/* 1 .. 14 */, u32 byte)
@@ -410,12 +410,12 @@ u8 fl_mem_read(u8 block/* 1 .. 14 */, u32 byte)
 void fl_mem_ERASE_block(vu8 block)
 {
     vu32 c = ( (vu32)block & 15 ) << 7 | fm_NVRB | fm_OEB ;
-    /* цикл 1 */ fl_mem_command_cycle   (c, 0x555, 0xAA);
-    /* цикл 2 */ fl_mem_command_cycle   (c, 0xAAA, 0x55);
-    /* цикл 3 */ fl_mem_command_cycle   (c, 0x555, 0x80);
-    /* цикл 4 */ fl_mem_command_cycle   (c, 0x555, 0xAA);
-    /* цикл 5 */ fl_mem_command_cycle   (c, 0xAAA, 0x55);
-    /* цикл 6 */ fl_mem_full_cycle_2_MHz(c, 0xAAA, 0x10);
+    /* С†РёРєР» 1 */ fl_mem_command_cycle   (c, 0x555, 0xAA);
+    /* С†РёРєР» 2 */ fl_mem_command_cycle   (c, 0xAAA, 0x55);
+    /* С†РёРєР» 3 */ fl_mem_command_cycle   (c, 0x555, 0x80);
+    /* С†РёРєР» 4 */ fl_mem_command_cycle   (c, 0x555, 0xAA);
+    /* С†РёРєР» 5 */ fl_mem_command_cycle   (c, 0xAAA, 0x55);
+    /* С†РёРєР» 6 */ fl_mem_full_cycle_2_MHz(c, 0xAAA, 0x10);
 }
 
 void fl_mem_wr_data(u8 block/* 1 .. 14 */, u32 byte, void const* p, u32 length)
